@@ -1,0 +1,116 @@
+
+
+from watchdog.observers import Observer                 
+import time
+from watchdog.events import FileSystemEventHandler
+import os                                               #library to handle files
+#import json
+import shutil                                           #library to extract extension and filename from file
+from datetime import datetime                           #time library to detech changes and match time
+from time import gmtime, strftime
+
+
+folder_to_track='/Users/DELL/Desktop'           #Desktop folder that will be watch
+
+
+extensions_folders = {                          #A dictionary to source paths from given extensions
+#Audio
+    '.txt' : "/Users/DELL/Desktop/dest_txt",
+    '.png' : "/Users/DELL/Desktop/dest_png",
+
+    }
+extensions_folders = {
+#Audio
+    '.aif' : "/Users/DELL/Desktop/Audio",
+    '.cda' : "/Users/DELL/Desktop/Audio",
+    '.mid' : "/Users/DELL/Desktop/Audio",
+    '.midi' : "/Users/DELL/Desktop/Audio",
+    '.mp3' : "/Users/DELL/Desktop/Audio",
+    '.mpa' : "/Users/DELL/Desktop/Audio",
+    '.ogg' : "/Users/DELL/Desktop/Audio",
+    '.wav' : "/Users/DELL/Desktop/Audio",
+    '.wma' : "/Users/DELL/Desktop/Audio",
+    '.wpl' : "/Users/DELL/Desktop/Audio",
+    '.m3u' : "/Users/DELL/Desktop/Audio",
+#Text
+    '.txt' : "/Users/DELL/Desktop/Text",
+    '.doc' : "/Users/DELL/Desktop/Text",
+    '.docx' : "/Users/DELL/Desktop/Text",
+    '.odt ' : "/Users/DELL/Desktop/Text",
+    '.pdf': "/Users/DELL/Desktop/Text/PDF",
+    '.pptx': "/Users/DELL/Desktop/Text",
+    '.tex': "/Users/DELL/Desktop/Text",
+    '.wks ': "/Users/DELL/Desktop/Text",
+    '.wps': "/Users/DELL/Desktop/Text",
+    '.wpd': "/Users/DELL/Desktop/Text",
+#Video
+    '.3g2': "/Users/DELL/Desktop/Video",
+    '.3gp': "/Users/DELL/Desktop/Video",
+    '.avi': "/Users/DELL/Desktop/Video",
+    '.flv': "/Users/DELL/Desktop/Video",
+    '.h264': "/Users/DELL/Desktop/Video",
+    '.m4v': "/Users/DELL/Desktop/Video",
+    '.mkv': "/Users/DELL/Desktop/Video",
+    '.mov': "/Users/DELL/Desktop/Video",
+    '.mp4': "/Users/DELL/Desktop/Video",
+    '.mpg': "/Users/DELL/Desktop/Video",
+    '.mpeg': "/Users/DELL/Desktop/Video",
+    '.rm': "/Users/DELL/Desktop/Video",
+    '.swf': "/Users/DELL/Desktop/Video",
+    '.vob': "/Users/DELL/Desktop/Video",
+    '.wmv': "/Users/DELL/Desktop/Video",
+#Images
+    '.ai': "/Users/DELL/Desktop/Images",
+    '.bmp': "/Users/DELL/Desktop/Images",
+    '.gif': "/Users/DELL/Desktop/Images",
+    '.ico': "/Users/DELL/Desktop/Images",
+    '.jpg': "/Users/DELL/Desktop/Images",
+    '.jpeg': "/Users/DELL/Desktop/Images",
+    '.png': "/Users/DELL/Desktop/Images",
+    '.ps': "/Users/DELL/Desktop/Images",
+    '.psd': "/Users/DELL/Desktop/Images",
+    '.svg': "/Users/DELL/Desktop/Images",
+    '.tif': "/Users/DELL/Desktop/Images",
+    '.tiff': "/Users/DELL/Desktop/Images",
+    '.CR2': "/Users/DELL/Desktop/Images",
+
+#Spreadsheets
+    '.ods' : "/Users/DELL/Desktop/Text",
+    '.xlr' : "/Users/DELL/Desktop/Text",
+    '.xls' : "/Users/DELL/Desktop/Text",
+    '.xlsx' : "/Users/DELL/Desktop/Text",
+}
+
+class MyHandler(FileSystemEventHandler):                #A class of watchdog observer
+    def on_modified(self, event):                       #this function will detech modifications, you can also check for deletion or creation
+        for filename in os.listdir(folder_to_track):        
+            #print (filename)       
+            extension= str(os.path.splitext(folder_to_track + '/' + filename)[1])       #the [1] stands for extension, [0] will return filename
+            #print (extension)
+            dest_path= extensions_folders[extension]                #source file path from dict
+            dest= dest_path + "/" + filename                        #adding file name to the path 
+            print (dest)
+            src=src = folder_to_track + "/" + filename
+            print (src)
+            os.rename(src, dest)                                    #change file path
+
+
+
+
+event_handler = MyHandler()         #intiate handler
+observer = Observer()               #initiate handler
+observer.schedule(event_handler, folder_to_track, recursive=True)   #schedule handler, dir to track and recursion
+observer.start()        #starting observer again
+
+try:
+    while True:           
+        time.sleep(10)
+except KeyboardInterrupt:
+    observer.stop()
+observer.join()
+
+
+
+        
+
+
